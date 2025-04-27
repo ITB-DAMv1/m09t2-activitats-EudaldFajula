@@ -6,75 +6,37 @@ namespace T2Activitats
     {
         public static void Main()
         {
-            //Ex 2
-            string fileRouteEx2 = "../../../processList.txt";
-            var process = new Process
+            //Ex5a
+            Thread[] threadsEx5a = new Thread[5];
+            for (int i = 0; i < 5; i++)
             {
-                StartInfo = new ProcessStartInfo
+                int num = i + 1;
+                threadsEx5a[i] = new Thread(() =>
                 {
-                    FileName = "dotnet",
-                    Arguments = "--info",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
+                    Console.WriteLine($"Hola! Sóc el fil número {num}");
+                });
+            }
+            foreach (var t in threadsEx5a) { t.Start(); }
 
-            process.Start();
+            foreach (var t in threadsEx5a) { t.Join(); }
 
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            Console.WriteLine(output);
-
-            var processos = Process.GetProcesses();
-            using (StreamWriter escriptor = new StreamWriter(fileRouteEx2))
+            //Ex5b
+            Thread[] threadsEx5b = new Thread[5];
+            for (int i = 0; i < 5; i++)
             {
-                foreach (Process os in processos)
+                int num = i + 1;
+                threadsEx5b[i] = new Thread(() =>
                 {
-                    Console.WriteLine($"PID: {os.Id}, Name: {os.ProcessName}");
-                    escriptor.WriteLine($"PID: {os.Id}, Name: {os.ProcessName}");
-                }
+                    Thread.Sleep((6 - num) * 100);
+                    Console.WriteLine($"Hola! Soc el fil número {num}");
+                });
             }
 
-            //Ex 3
-            string fileRouteEx3 = "../../../one_process.txt";
-            Console.WriteLine("Choose a process: (PID)");
-            int pid = int.Parse(Console.ReadLine());
-            Process chromeP = null;
-            try
-            {
-                chromeP = Process.GetProcessById(pid);
-                ProcessThreadCollection pTC = chromeP.Threads;
-                Console.WriteLine("Threats of the program {0}, Threats count: {1}", chromeP.ProcessName, pTC.Count);
-                using (StreamWriter escriptor = new StreamWriter(fileRouteEx3))
-                {
-                    foreach (ProcessThread pt in pTC)
-                    {
-                        Console.WriteLine($"{pt.Id} \t Container {pt.Container}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            try
-            {
-                ProcessModuleCollection pMC = chromeP.Modules;
-                Console.WriteLine("Modul of the program {0}, ModulCount: {1}", chromeP.ProcessName, pMC.Count);
-                using (StreamWriter escriptor = new StreamWriter(fileRouteEx3))
-                {
-                    foreach (ProcessModule pM in pMC)
-                    {
-                        Console.WriteLine($"{pM.ModuleName} \t Container: {pM.Container}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            foreach (var t in threadsEx5b) { t.Start(); }
+
+            foreach (var t in threadsEx5b) { t.Join(); }
         }
+
     }
 
 }
